@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -17,7 +17,25 @@ class Todo(db.Model):
 
 db.create_all()
 
+# POST request listener from form element
+@app.route('/todos/create', methods=['POST'])
+def create_todo():
+    # gets input from form with name='description'
+    description = request.form.get('description', '')
+
+    # create new Todo with form data
+    todo = Todo(description=description)
+
+    # add new todo object to session and commit
+    # this adds new entry to database
+    db.session.add(todo)
+    db.session.commit()
+
+    # redirects to index method, which reloads page
+    return redirect(url_for('index'))
+
 
 @app.route('/')
 def index():
+    # tells the view to render with index.html using latest model
     return render_template('index.html', data=Todo.query.all())

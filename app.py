@@ -80,4 +80,4 @@ def set_completed_todo(todo_id):
 @app.route('/')
 def index():
     # tells the view to render with index.html using latest model
-    return render_template('index.html', data=Todo.query.all())
+    return render_template('index.html', data=Todo.query.order_by('id').all())

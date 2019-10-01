@@ -11,6 +11,21 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            width: 200px;
+        }
+
+        li {
+            clear: both;
+        }
+
+        li button {
+            -webkit-appearance: none;
+            border: none;
+            outline: none;
+            color: red;
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -25,17 +40,32 @@
         {% for d in data %}
         <li><input class="check-completed" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked
                 {% endif %} />
-            {{ d.description }} </li>
+            {{ d.description }}
+            <button class="buttons" onclick="clickHandler(this)" data-id="{{ d.id }}"" >&cross;</button>
+        </li>
         {% endfor %}
     </ul>
     <script>
+        function clickHandler(e) {
+            console.log(e.dataset.id)
+            const todoId = e.dataset.id;
+            console.log('todoId', todoId)
+            fetch('/todos/' + todoId + '/delete', {
+                method: 'DELETE'
+            })
+                .then(function () {
+                    document.getElementById('error').className = 'hidden';
+                })
+                .catch(function () {
+                    document.getElementById('error').className = '';
+                })
+        }
+
         const checkboxes = document.querySelectorAll('.check-completed');
         for (let i = 0; i < checkboxes.length; i++) {
             const checkbox = checkboxes[i];
             checkbox.onchange = function (e) {
-                console.log(e)
                 const newCompleted = e.target.checked;
-                console.log(newCompleted)
                 const todoId = e.target.dataset['id'];
                 fetch('/todos/' + todoId + '/set-completed', {
                     method: 'POST',

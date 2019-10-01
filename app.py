@@ -77,6 +77,18 @@ def set_completed_todo(todo_id):
     return redirect(url_for('index'))
 
 
+@app.route('/todos/<todo_id>/delete', methods=['DELETE'])
+def delete_todo(todo_id):
+    try:
+        Todo.query.filter_by(id=todo_id).delete()
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+    return redirect(url_for('index'))
+
+
 @app.route('/')
 def index():
     # tells the view to render with index.html using latest model

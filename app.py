@@ -41,8 +41,10 @@ def create_todo():
         # gets value of key='description' from returning json
         description = request.get_json()['description']
 
+        list_id = request.get_json()['list_id']
+
         # create new Todo with form data
-        todo = Todo(description=description)
+        todo = Todo(description=description, list_id=list_id)
 
         # add new todo object to session and commit
         # this adds new entry to database
